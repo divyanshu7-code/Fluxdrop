@@ -172,6 +172,4 @@ setInterval(() => {
 }, 60 * 1000);
 
 // ---- Start server ----
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ FluxDrop running at: http://${localIP}:${PORT}`);
-});
+server.listen(PORT, () => console.log(`FluxDrop listening on ${PORT}`));
