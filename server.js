@@ -173,5 +173,5 @@ setInterval(() => {
 
 // ---- Start server ----
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ QuickShare running at: http://${localIP}:${PORT}`);
+  console.log(`✅ FluxDrop running at: http://${localIP}:${PORT}`);
 });

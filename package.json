@@ -1,7 +1,7 @@
 {
-  "name": "quickshare-mvp",
+  "name": "fluxdrop",
   "version": "1.0.0",
-  "description": "Simple, no-login file/text sharing via room link + QR (MVP)",
+  "description": "Simple, no-login file/text sharing via room link + QR",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
