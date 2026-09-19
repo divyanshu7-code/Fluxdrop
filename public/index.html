@@ -3,81 +3,117 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FluxDrop</title>
+  <title>FluxDrop — Instant device-to-device transfer</title>
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- QR code and Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 </head>
 <body>
+
+  <div class="skyline" aria-hidden="true"></div>
+
   <div class="container">
-    <h1>FluxDrop</h1>
-    <p class="sub">Share files & notes instantly between devices. No login.</p>
 
-    <!-- 🆕 Mobile Link Section -->
-    <div class="card" style="margin-bottom: 16px;">
-      <h3>📱 Mobile Link</h3>
-      <div id="mobileLink" class="muted">Fetching…</div>
-      <button id="copyMobileBtn">Copy Mobile Link</button>
-    </div>
-
-    <div id="setup">
-      <button id="createRoomBtn">Create New Link</button>
-      <div class="join">
-        <input id="roomInput" placeholder="Enter code (e.g., A1b2C3)" />
-        <button id="joinBtn">Join</button>
+    <header class="masthead">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">FluxDrop</span>
       </div>
-    </div>
+      <a class="mobile-chip" id="copyMobileBtn" title="Copy the local network link">
+        <span class="mobile-dot" aria-hidden="true"></span>
+        <span id="mobileLink">Fetching local link…</span>
+      </a>
+    </header>
 
-    <div id="room" class="hidden">
-      <div class="row">
-        <div class="card">
-          <h3>Room</h3>
-          <div class="roomline">
-            <span id="roomId"></span>
-            <button id="copyBtn">Copy Link</button>
-          </div>
+    <!-- SETUP: hero + primary actions -->
+    <section id="setup" class="hero">
+      <div class="hero-copy">
+        <h1>Move anything between your devices, instantly.</h1>
+        <p class="hero-sub">No accounts, no cables. Open a link on one screen, scan or type the code on another, and text and files stay in sync until the room expires.</p>
+      </div>
 
-          <!-- QR container -->
-          <div id="qrcanvas" style="width:160px;height:160px;"></div>
-
-          <p class="muted">Scan on your phone to open this room.</p>
-          <p class="muted" id="expiry"></p>
-          <div id="countdown" class="muted"></div>
+      <div class="hero-actions">
+        <div class="action-panel">
+          <div class="action-panel-label">Start fresh</div>
+          <button id="createRoomBtn" class="btn btn-primary">Create a link</button>
+          <p class="action-hint">Generates a new room and a scannable code.</p>
         </div>
 
-        <div class="card">
-          <h3>Share Text</h3>
-          <textarea id="textArea" rows="6" placeholder="Type or paste text here"></textarea>
+        <div class="action-divider" aria-hidden="true"><span>or</span></div>
 
-	  <!-- Copy button clearly below -->
-	  <button id="copyTextBtn" style="margin-top:8px;">📋 Copy Text</button>
-
-
-          <!-- New Status Line with Dot -->
-          <div style="margin-top:8px; display:flex; align-items:center; gap:6px;">
-            <span id="syncDot" style="width:10px;height:10px;border-radius:50%;background:gray;display:inline-block;"></span>
-            <span id="syncStatus" class="muted">Not synced yet</span>
+        <div class="action-panel">
+          <div class="action-panel-label">Already have a code?</div>
+          <div class="join-row">
+            <input id="roomInput" placeholder="A1B2C3" autocomplete="off" spellcheck="false" />
+            <button id="joinBtn" class="btn btn-ghost">Join</button>
           </div>
-        </div>
-
-        <div class="card">
-          <h3>Share File</h3>
-          <input id="fileInput" type="file" />
-          <button id="uploadBtn">Upload</button>
-          <div id="files"></div>
+          <p class="action-hint">Case-insensitive, letters and numbers only.</p>
         </div>
       </div>
-    </div>
+    </section>
 
-    <footer>
-      <span class="muted">Files auto-delete after 60 minutes. Do not upload sensitive data.</span>
+    <!-- ACTIVE ROOM -->
+    <section id="room" class="room hidden">
+
+      <div class="beacon-bar">
+        <div class="beacon-identity">
+          <div class="beacon-pulse" aria-hidden="true"></div>
+          <div>
+            <div class="beacon-label">Room code</div>
+            <div id="roomId" class="beacon-code"></div>
+          </div>
+        </div>
+
+        <div class="beacon-meta">
+          <div class="beacon-status">
+            <span id="syncDot" class="status-dot"></span>
+            <span id="syncStatus" class="status-text">Not synced yet</span>
+          </div>
+          <div id="expiry" class="beacon-expiry"></div>
+          <div id="countdown" class="beacon-countdown"></div>
+        </div>
+
+        <button id="copyBtn" class="btn btn-ghost btn-small">Copy link</button>
+      </div>
+
+      <div class="grid">
+
+        <div class="panel panel-qr">
+          <h3>Scan to connect</h3>
+          <div id="qrcanvas" class="qr-frame"></div>
+          <p class="panel-note">Point a phone camera at the code to open this room directly.</p>
+        </div>
+
+        <div class="panel panel-text">
+          <div class="panel-head">
+            <h3>Shared text</h3>
+            <button id="copyTextBtn" class="btn btn-ghost btn-small">Copy</button>
+          </div>
+          <textarea id="textArea" rows="10" placeholder="Type or paste — every connected device sees this as you type."></textarea>
+        </div>
+
+        <div class="panel panel-files">
+          <h3>Shared files</h3>
+          <div class="upload-row">
+            <input id="fileInput" type="file" />
+            <button id="uploadBtn" class="btn btn-primary btn-small">Upload</button>
+          </div>
+          <div id="files" class="file-list"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      Files are removed automatically after 60 minutes. Treat this as a public wire — skip anything sensitive.
     </footer>
   </div>
 
-  <!-- toast container -->
-  <div id="toast" style="position:fixed;right:16px;bottom:16px;z-index:9999;pointer-events:none;"></div>
+  <div id="toast" class="toast-stack"></div>
 
   <script src="main.js"></script>
 </body>
