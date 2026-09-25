@@ -330,11 +330,11 @@ button:active { transform: translateY(1px); }
 }
 
 .qr-frame {
-  width: 168px;
-  height: 168px;
-  padding: 8px;
+  width: 186px;
+  height: 186px;
+  padding: 13px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 25px;
   margin: 0 auto;
 }
 
