@@ -169,7 +169,6 @@ input:focus, textarea:focus { border-color: var(--accent-dim); }
   flex: 1;
   font-family: var(--font-mono);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 button {
