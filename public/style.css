@@ -384,6 +384,18 @@ a:hover { text-decoration: underline; }
   transition: opacity 0.3s ease;
 }
 
+.madeBy{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFC857;
+  width: fit-content;
+  margin: auto;
+  padding: 8px;
+  color: black;
+  border-radius: 30px;
+}
+
 /* ====== Responsive ====== */
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; gap: 28px; }
